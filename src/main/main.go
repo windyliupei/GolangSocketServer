@@ -3,15 +3,20 @@ package main
 //import protocol "protocol"
 
 import (
+	"dbAccess"
 	"fmt"
 	"net"
 	"os"
+	"xmlConfig"
 
-	"../protocol"
-	"../xmlConfig"
+	"protocol"
 )
 
 func main() {
+
+	fmt.Println("Server Start")
+
+	dbAccess.GetMacEncryptKey("00d02d23d2ae")
 
 	var configMap map[string]string
 	configMap = xmlConfig.GetConfig()

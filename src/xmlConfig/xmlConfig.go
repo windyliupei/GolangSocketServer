@@ -3,7 +3,6 @@ package xmlConfig
 import (
 	"bytes"
 	"encoding/xml"
-	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -17,7 +16,6 @@ func GetConfig() map[string]string {
 	configMap := make(map[string]string)
 
 	currentPath, err := os.Getwd()
-	//CheckError(err)
 
 	configByte, err := ioutil.ReadFile(currentPath + "/config.xml")
 
@@ -35,13 +33,11 @@ func GetConfig() map[string]string {
 		case xml.StartElement:
 			name := token.Name.Local
 			keyList = append(keyList, name)
-			fmt.Println(keyList)
 			elementCount++
 		case xml.CharData:
 			content := string([]byte(token))
 			if content != "\n" {
 				valueList = append(valueList, content)
-				fmt.Println(valueList)
 			}
 
 		}
@@ -49,8 +45,6 @@ func GetConfig() map[string]string {
 	for index := 0; index < elementCount; index++ {
 		configMap[keyList[index]] = valueList[index]
 	}
-	fmt.Println(elementCount)
-
 	return configMap
 }
 
@@ -58,6 +52,5 @@ func GetElement(key string, themap map[string]string) string {
 	if value, ok := themap[key]; ok {
 		return value
 	}
-
 	return ""
 }
