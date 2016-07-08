@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"xmlConfig"
-
 	//Init MS SQL Server dirver, so we can open Database as "mssql"
 	//Select the related SQL Connect Drivers from :https://github.com/golang/go/wiki/SQLDrivers
-	_ "github.com/denisenkom/go-mssqldb"
+	//_ "github.com/denisenkom/go-mssqldb"
+	_ "go-mssqldb"
 )
 
 var connectStr string
