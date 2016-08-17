@@ -3,7 +3,6 @@ package main
 //import protocol "protocol"
 
 import (
-	"dbAccess"
 	"fmt"
 	"net"
 	"os"
@@ -16,7 +15,7 @@ func main() {
 
 	fmt.Println("Server Start")
 
-	dbAccess.GetMacEncryptKey("00d02d23d2ae")
+	//dbAccess.GetMacEncryptKey("00d02d23d2ae")
 
 	var configMap map[string]string
 	configMap = xmlConfig.GetConfig()
@@ -35,8 +34,7 @@ func main() {
 		if err != nil {
 			continue
 		}
-
-		Log(conn.RemoteAddr().String(), " tcp connect success")
+		Log(conn.RemoteAddr().String(), " tcp connect successful!")
 		go handleConnection(conn)
 	}
 }
@@ -60,6 +58,8 @@ func handleConnection(conn net.Conn) {
 		}
 
 		tmpBuffer = protocol.Depack(append(tmpBuffer, buffer[:n]...), readerChannel)
+
+		conn.Write(tmpBuffer)
 	}
 	defer conn.Close()
 
