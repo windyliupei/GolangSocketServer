@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"xmlConfig"
@@ -14,9 +15,10 @@ import (
 func main() {
 
 	fmt.Println("Server Start")
-
+	//Database access : get mac encrypt key.
 	//dbAccess.GetMacEncryptKey("00d02d23d2ae")
 
+	//Get Socket setting, host, port from xml file.
 	var configMap map[string]string
 	configMap = xmlConfig.GetConfig()
 
@@ -25,6 +27,7 @@ func main() {
 
 	//建立socket，监听端口
 	netListen, err := net.Listen("tcp", localhost+":"+port)
+	Log("Localhost:" + localhost + "port:" + port)
 	CheckError(err)
 	defer netListen.Close()
 
@@ -52,8 +55,11 @@ func handleConnection(conn net.Conn) {
 	buffer := make([]byte, 1024)
 	for {
 		n, err := conn.Read(buffer)
+		Log(n)
 		if err != nil {
-			Log(conn.RemoteAddr().String(), " connection error: ", err)
+			if err != io.EOF {
+				Log(conn.RemoteAddr().String(), " connection error: ", err)
+			}
 			return
 		}
 
