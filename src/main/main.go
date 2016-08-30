@@ -12,7 +12,6 @@ import (
 	"xmlConfig"
 
 	"bufio"
-	"log"
 )
 
 func main() {
@@ -40,7 +39,7 @@ func main() {
 		if err != nil {
 			continue
 		}
-		Log(conn.RemoteAddr().String(), " tcp connect successful!")
+		//Log(conn.RemoteAddr().String(), " tcp connect successful!")
 		go handleConnection(conn)
 	}
 
@@ -52,7 +51,7 @@ func main() {
 		if command == "stop" {
 			running = false
 		}
-		log.Println("command", command)
+		//log.Println("command", command)
 	}
 	if !running {
 		os.Exit(1)
@@ -99,12 +98,12 @@ func handleConnection(conn net.Conn) {
 }
 
 func reader(readerChannel chan []byte) {
-	for {
-		select {
-		case data := <-readerChannel:
-			Log("receive data string:" + string(data))
-		}
-	}
+	// for {
+	// 	select {
+	// 	case data := <-readerChannel:
+	// 		Log("receive data string:" + string(data))
+	// 	}
+	// }
 }
 
 func Log(v ...interface{}) {
