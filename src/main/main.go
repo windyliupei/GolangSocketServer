@@ -70,44 +70,45 @@ func handleConnection(conn net.Conn) {
 	go reader(readerChannel)
 
 	buffer := make([]byte, 1024) //TODO:Need handle the buffer size.
-	//for {
-	n, err := conn.Read(buffer)
+	for {
+		n, err := conn.Read(buffer)
 
-	if err != nil {
-		if err != io.EOF {
-			Log(conn.RemoteAddr().String(), " connection error: ", err)
+		if err != nil {
+			if err != io.EOF {
+				Log(conn.RemoteAddr().String(), " connection error: ", err)
+			}
+			return
 		}
-		return
+
+		tmpBuffer = protocol.Depack((buffer[:n]), readerChannel)
+		//Return to the client side.
+		conn.Write(tmpBuffer)
+		timeout := 900 //15 mins
+		messnager := make(chan byte)
+		//心跳计时
+		go HeartBeating(conn, messnager, timeout)
+		//检测每次Client是否有数据传来
+		go GravelChannel(tmpBuffer, messnager)
 	}
-
-	tmpBuffer = protocol.Depack(append(tmpBuffer, buffer[:n]...), readerChannel)
-	//Return to the client side.
-	conn.Write(tmpBuffer)
-
-	//timeout := 10
-	//messnager := make(chan byte)
-	//心跳计时
-	//go HeartBeating(conn, messnager, timeout)
-	//检测每次Client是否有数据传来
-	//Log("!" + string(tmpBuffer))
-	//go GravelChannel(tmpBuffer, messnager)
-	//}
-
 	//defer conn.Close()
 
 }
 
 func reader(readerChannel chan []byte) {
-	// for {
-	// 	select {
-	// 	case data := <-readerChannel:
-	// 		Log("receive data string:" + string(data))
-	// 	}
-	// }
+	for {
+		select {
+		case data := <-readerChannel:
+			Log("receive data string:" + string(data))
+		}
+	}
 }
 
 func Log(v ...interface{}) {
 	fmt.Println(v...)
+}
+
+func LogNothing(v ...interface{}) {
+
 }
 
 func CheckError(err error) {
@@ -123,10 +124,10 @@ func CheckError(err error) {
 func HeartBeating(conn net.Conn, messnager chan byte, timeout int) {
 	select {
 	case fk := <-messnager:
-		Log(conn.RemoteAddr().String(), "receive data string:", string(fk))
+		LogNothing(string(fk))
 		conn.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Second))
 		break
-	case <-time.After(time.Second * 5):
+	case <-time.After(time.Duration(timeout) * time.Second):
 		Log("It's really weird to get Nothing!!!")
 		conn.Close()
 	}
@@ -135,10 +136,8 @@ func HeartBeating(conn net.Conn, messnager chan byte, timeout int) {
 
 func GravelChannel(n []byte, messnager chan byte) {
 
-	Log("~!" + string(n))
-	Log(len(n))
 	for _, v := range n {
-		Log(string(v))
+		LogNothing(string(v))
 		messnager <- v
 	}
 	close(messnager)
