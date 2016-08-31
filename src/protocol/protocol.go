@@ -4,7 +4,7 @@ package protocol
 import (
 	"bytes"
 	"encoding/binary"
-	"strings"
+	//"strings"
 )
 
 const (
@@ -56,19 +56,27 @@ func Depack(buffer []byte, readerChannel chan []byte) []byte {
 		return make([]byte, 0)
 	}
 
+	// var transferBody = string(buffer[i:])
+	// var prefix = substr(transferBody, 0, strings.Index(transferBody, ":"))
+
+	// switch key := prefix; key {
+	// case "echo":
+	// 	{
+	// 		var messageBody = strings.TrimSuffix(strings.TrimPrefix(transferBody, key+":"), "#")
+	// 		data := []byte(messageBody)
+	// 		readerChannel <- data
+	// 		return data
+	// 	}
+
+	// }
+
 	var transferBody = string(buffer[i:])
-	var prefix = substr(transferBody, 0, strings.Index(transferBody, ":"))
-
-	switch key := prefix; key {
-	case "echo":
-		{
-			var messageBody = strings.TrimSuffix(strings.TrimPrefix(transferBody, key+":"), "#")
-			data := []byte(messageBody)
-			readerChannel <- data
-			return data
-		}
-
-	}
+	//var prefix = substr(transferBody, 0, strings.Index(transferBody, ":"))
+	var snedtoBody = "You said:" + transferBody
+	//var messageBody = strings.TrimSuffix(strings.TrimPrefix(transferBody, key+":"), "#")
+	data := []byte(snedtoBody)
+	readerChannel <- data
+	return data
 
 	if i == length {
 		return make([]byte, 0)

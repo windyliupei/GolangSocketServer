@@ -93,7 +93,7 @@ func handleConnection(conn net.Conn) {
 	//go GravelChannel(tmpBuffer, messnager)
 	//}
 
-	defer conn.Close()
+	//defer conn.Close()
 
 }
 
