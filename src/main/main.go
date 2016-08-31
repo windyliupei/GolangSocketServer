@@ -83,15 +83,15 @@ func handleConnection(conn net.Conn) {
 		tmpBuffer = protocol.Depack((buffer[:n]), readerChannel)
 		//Return to the client side.
 		conn.Write(tmpBuffer)
-		timeout := 900 //15 mins
-		messnager := make(chan byte)
+
+		//timeout := 900 //15 mins
+		//messnager := make(chan byte)
 		//心跳计时
-		go HeartBeating(conn, messnager, timeout)
+		//go HeartBeating(conn, messnager, timeout)
 		//检测每次Client是否有数据传来
-		go GravelChannel(tmpBuffer, messnager)
+		//go GravelChannel(tmpBuffer, messnager)
 	}
 	//defer conn.Close()
-
 }
 
 func reader(readerChannel chan []byte) {
